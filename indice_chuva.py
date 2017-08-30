@@ -60,7 +60,7 @@ def convertCidade(cidadeStr,nome):
      raise NotImplementedError('Formato da cidade-> qtdDiasMedicoesChuva:listaMedicoesChuva(separado por virgula).')
 
 def convertListaCidade(listaCidadeStr):      
-    return list(map(lambda (i,x):convertCidade(x,i + 1), enumerate(listaCidadeStr)))
+    return list(map(lambda x:convertCidade(x,listaCidadeStr.index(x) + 1), listaCidadeStr))
 
 def printarMenorMaiorMediaChuvaCidades(cidades):    
     for cidade in cidades:

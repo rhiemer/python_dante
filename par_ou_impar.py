@@ -67,7 +67,7 @@ def convertPartida(nome,strListaApostas):
   return Partida(nome,convertListaApostas(strListaApostas))
 
 def convertListaPartidas(listaSequencia):
-  return list(map(lambda (i,it):convertPartida(i + 1,it),enumerate(listaSequencia)))
+  return list(map(lambda it:convertPartida(listaSequencia.index(it) + 1,it),listaSequencia))
    
 def printarPartidas(partidas):
  for partida in partidas:
