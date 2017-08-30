@@ -37,6 +37,10 @@ class CalculosMediaLista(object):
 class Cidade(object):     
   def __init__(self,nome,qtdDiasMedicoesChuva,listaMedicoesChuva):
     super(Cidade, self).__init__()
+    if (qtdDiasMedicoesChuva < 1):
+      raise NotImplementedError('Quantidades de dias de medições das chuvas não pode ser menor do que 1.')
+    if (len(listaMedicoesChuva) == 0):
+      raise NotImplementedError('Lista com os valores das medições das chuvas não pode estar vazia.')     
     self.nome = nome
     self.qtdDiasMedicoesChuva = qtdDiasMedicoesChuva
     self.listaMedicoesChuva = listaMedicoesChuva
@@ -45,28 +49,33 @@ class Cidade(object):
     print ("Cidade {0}".format(self.nome))         
   def printarMenorMaiorMediaChuva(self):
     self.calculosMediaListaChuva.printMenorMaiorMedia()
-   
-def printarMenorMaiorMediaChuvaCidades(sequencias):
-    for indice,itSequencia in enumerate(sequencias):           
-      arraySequencias = itSequencia.split(":")
-      if (len(arraySequencias) == 2):
-        qtdDiasMedicoesChuva = int(arraySequencias[0].strip())
-        listaMedicoesChuva = list(map(lambda it:float(it.strip()),arraySequencias[1].split(",")))
-        cidade = Cidade(indice + 1,qtdDiasMedicoesChuva,listaMedicoesChuva)
-        cidade.printarCidade()
-        cidade.printarMenorMaiorMediaChuva()
-        print ("")     
-      else:  
-        raise NotImplementedError('Formato da cidade-> qtdDiasMedicoesChuva:listaMedicoesChuva(separado por virgula).') 
-            
+
+def convertCidade(cidadeStr,nome):
+   arraySequencias = cidadeStr.split(":")
+   if (len(arraySequencias) == 2):
+     qtdDiasMedicoesChuva = int(arraySequencias[0].strip())
+     listaMedicoesChuva = list(map(lambda it:float(it.strip()),arraySequencias[1].split(",")))
+     return Cidade(nome,qtdDiasMedicoesChuva,listaMedicoesChuva)
+   else:  
+     raise NotImplementedError('Formato da cidade-> qtdDiasMedicoesChuva:listaMedicoesChuva(separado por virgula).')
+
+def convertListaCidade(listaCidadeStr):      
+    return list(map(lambda (i,x):convertCidade(x,i + 1), enumerate(listaCidadeStr)))
+
+def printarMenorMaiorMediaChuvaCidades(cidades):    
+    for cidade in cidades:
+     cidade.printarCidade()
+     cidade.printarMenorMaiorMediaChuva()
+     print ("")                  
 
 if (__name__ == "__main__"):
   # Recuperando parametros da execução num prompt de comando ou shell
-  # python indice_chuva.py --sequencias 3:100,120,0,0,247,30 1:10 2:50,50,0,0
+  # python indice_chuva.py --medicoes 3:100,120,0,0,247,30 1:10 2:50,50,0,0
   parser = argparse.ArgumentParser()  
-  parser.add_argument("--sequencias", help="Sequencias de medições das cidades ", nargs='+')  
+  parser.add_argument("--medicoes", help="Medições das chuvas das cidades -> Quatidade de Dias de Medições de Chuva:Valores(separados por virgula) ",nargs='+')  
   args = parser.parse_args()  
-  printarMenorMaiorMediaChuvaCidades(args.sequencias)
+  cidades = convertListaCidade(args.medicoes)
+  printarMenorMaiorMediaChuvaCidades(cidades)
 
       
 
